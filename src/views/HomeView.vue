@@ -8,11 +8,10 @@ import type { Ad } from '../types/api'
 
 const ads = ref<Ad[]>([])
 const auth = useAuthStore()
-const toast = useToastStore() // <-- Инициализировали
+const toast = useToastStore()
 const isLoading = ref(true)
 const errorMessage = ref('')
 
-// Функция для красивых значков валюты
 const getCurrencySymbol = (code: string) => {
   const symbols: Record<string, string> = {
     AZN: '₼',
@@ -22,7 +21,22 @@ const getCurrencySymbol = (code: string) => {
   return symbols[code] || code
 }
 
-// Умная функция для путей до фоток (локалка vs прод)
+const toggleFavorite = async (ad: Ad) => {
+  if (!auth.isLoggedIn) {
+    toast.show('Сначала нужно войти в аккаунт!', 'error')
+    return
+  }
+  
+  ad.is_favorite = !ad.is_favorite 
+  
+  try {
+    await api.post(`ads/${ad.id}/favorite/`)
+  } catch (error) {
+    ad.is_favorite = !ad.is_favorite
+    toast.show('Не удалось обновить избранное', 'error')
+  }
+}
+
 onMounted(async () => {
   try {
     const response = await api.get<Ad[]>('ads/')
@@ -66,11 +80,28 @@ onMounted(async () => {
       <router-link :to="`/ad/${ad.id}`" v-for="ad in ads" :key="ad.id" class="bg-neutral-800 rounded-2xl border border-neutral-700 overflow-hidden flex flex-col hover:border-green-500 transition-colors cursor-pointer shadow-lg block">
         
         <!-- Вывод фотки с нашей умной функцией или заглушки -->
-        <div v-if="ad.images && ad.images.length > 0" class="h-48 w-full bg-neutral-900">
-          <img :src="getImageUrl(ad.images[0]?.image)" alt="Фото объявления" class="w-full h-full object-cover" />
-        </div>
-        <div v-else class="h-48 bg-neutral-700 w-full flex items-center justify-center">
-          <span class="text-neutral-500">Нет фото</span>
+        <!-- Блок с фото и сердечком -->
+        <div class="relative h-48 w-full bg-neutral-900">
+          <img v-if="ad.images && ad.images.length > 0" :src="getImageUrl(ad.images[0]?.image)" alt="Фото" class="w-full h-full object-cover" />
+          <div v-else class="w-full h-full flex items-center justify-center text-neutral-500">Нет фото</div>
+          
+          <!-- Кнопка лайка -->
+          <button 
+            @click.prevent="toggleFavorite(ad)" 
+            class="absolute top-3 right-3 p-2 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              :fill="ad.is_favorite ? 'currentColor' : 'none'"
+              viewBox="0 0 24 24" 
+              stroke-width="1.5" 
+              stroke="currentColor" 
+              class="w-6 h-6 transition-colors"
+              :class="ad.is_favorite ? 'text-red-500' : 'text-white'"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            </svg>
+          </button>
         </div>
 
         <div class="p-5 flex-1 flex flex-col">

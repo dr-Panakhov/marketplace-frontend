@@ -97,7 +97,7 @@ const executeDelete = async () => {
 }
 
 const openEditModal = (ad: Ad) => {
-  editForm.value = structuredClone(ad)
+  editForm.value = JSON.parse(JSON.stringify(ad))
   selectedEditFiles.value = []
   deletedImagesIds.value = []
   showEditModal.value = true

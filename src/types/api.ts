@@ -22,6 +22,8 @@ export interface Ad {
   description: string
   images: AdImage[]
   author_name?: string
+  is_favorite?: boolean
+  author_id: number;
 }
 
 export interface AuthResponse {

@@ -6,6 +6,7 @@ import RegisterView from '../views/RegisterView.vue'
 import CreateAdView from '../views/CreateAdView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import { useAuthStore } from '../stores/auth'
+import FavoritesView from '../views/FavoritesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,6 +42,11 @@ const router = createRouter({
       name: 'profile',
       component: ProfileView,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/favorites',
+      name: 'favorites',
+      component: FavoritesView
     }
   ]
 })
