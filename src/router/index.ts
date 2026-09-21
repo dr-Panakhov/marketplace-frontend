@@ -7,6 +7,7 @@ import CreateAdView from '../views/CreateAdView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import { useAuthStore } from '../stores/auth'
 import FavoritesView from '../views/FavoritesView.vue'
+import SellerProfileView from '../views/SellerProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,7 +48,12 @@ const router = createRouter({
       path: '/favorites',
       name: 'favorites',
       component: FavoritesView
-    }
+    },
+    {
+      path: '/seller/:id',
+      name: 'seller-profile',
+      component: SellerProfileView
+    },
   ]
 })
 

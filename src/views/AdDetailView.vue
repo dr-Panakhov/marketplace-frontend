@@ -139,7 +139,9 @@ onMounted(() => {
         <h3 class="text-lg font-bold mb-4">Контакты продавца</h3>
         
         <div v-if="auth.isLoggedIn">
-          <p class="text-xl text-white font-black mb-1">👤 {{ ad.author_name || 'Продавец' }}</p>
+          <router-link :to="`/seller/${ad.author_id}`" class="block text-xl text-white hover:text-blue-400 transition-colors font-black mb-1">
+            👤 {{ ad.author_name || 'Продавец' }}
+          </router-link>
           <p class="text-gray-400 mb-4">📍 Город: {{ ad.city }}</p>
           
           <button 
