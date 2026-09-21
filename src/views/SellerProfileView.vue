@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { api } from '../api'
 import { getImageUrl } from '../utils/image'
@@ -20,23 +20,28 @@ const reviews = ref<Review[]>([])
 const isLoading = ref(true)
 const sellerName = ref('Мастер')
 
-// ID текущего залогиненного юзера
 const currentUserId = ref<number | null>(null)
 
 const isReviewModalOpen = ref(false)
 const isSubmitting = ref(false)
-const formError = ref('') // Сюда будем писать красивые ошибки вместо алертов
+const formError = ref('')
 const reviewForm = ref({
   text: '',
   rating: 5
 })
 
-// Узнаем, кто сейчас сидит на сайте
+const averageRating = computed(() => {
+  if (reviews.value.length === 0) return 0
+  const sum = reviews.value.reduce((acc, review) => acc + review.rating, 0)
+  return (sum / reviews.value.length).toFixed(1)
+})
+
 const fetchMe = async () => {
   try {
     const response = await api.get('auth/users/me/')
     currentUserId.value = response.data.id
   } catch (error) {
+    // null
   }
 }
 
@@ -103,12 +108,25 @@ onMounted(() => {
 
 <template>
   <div class="max-w-6xl mx-auto mt-10 px-4 mb-16 relative">
+    
     <div class="bg-neutral-800 p-8 rounded-2xl shadow-xl mb-8 border border-neutral-700 flex items-center gap-6">
       <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-lg">
         {{ sellerName.charAt(0).toUpperCase() }}
       </div>
       <div>
         <h1 class="text-3xl font-bold text-white mb-2">{{ sellerName }}</h1>
+        
+        <div class="flex items-center gap-3 mb-2">
+          <div v-if="reviews.length > 0" class="flex items-center gap-1 bg-neutral-900 px-3 py-1 rounded-lg border border-neutral-700">
+            <span class="text-yellow-400 text-lg">★</span>
+            <span class="text-white font-bold text-lg">{{ averageRating }}</span>
+          </div>
+          <div v-else class="bg-neutral-900 px-3 py-1 rounded-lg border border-neutral-700">
+            <span class="text-gray-500 font-medium">Нет оценок</span>
+          </div>
+          <span class="text-gray-400 text-sm">({{ reviews.length }} отзывов)</span>
+        </div>
+
         <p class="text-gray-400">Проверенный специалист на VektorGo 🛠️</p>
       </div>
     </div>
@@ -140,7 +158,6 @@ onMounted(() => {
     <div class="mt-12 bg-neutral-800 p-8 rounded-2xl shadow-xl border border-neutral-700">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-white">Отзывы ({{ reviews.length }})</h2>
-        <!-- Кнопка покажется ТОЛЬКО если это не твоя страница -->
         <button 
           v-if="currentUserId !== Number(route.params.id)"
           @click="isReviewModalOpen = true; formError = ''" 
@@ -170,6 +187,7 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- МОДАЛКА -->
     <div v-if="isReviewModalOpen" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 px-4">
       <div class="bg-neutral-800 p-6 rounded-2xl w-full max-w-lg border border-neutral-700 shadow-2xl">
         <h3 class="text-2xl font-bold text-white mb-4">Оставить отзыв</h3>

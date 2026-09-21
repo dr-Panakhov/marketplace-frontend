@@ -7,9 +7,14 @@ export type UserRole = 'customer' | 'master'
 
 export interface User {
   id: number
-  username: string
   email: string
   role: UserRole
+  first_name: string
+  last_name: string
+  phone_number: string
+  patronymic?: string
+  avatar?: string | null
+  username?: string
 }
 
 export interface Ad {

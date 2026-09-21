@@ -2,7 +2,7 @@
 import { ref, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '../api'
-import { useToastStore } from '../stores/toast' // <-- Подключили Тосты
+import { useToastStore } from '../stores/toast'
 
 const title = ref('')
 const price = ref('')
@@ -11,7 +11,7 @@ const city = ref('')
 const phoneNumber = ref('')
 const description = ref('')
 const router = useRouter()
-const toast = useToastStore() // <-- Инициализировали
+const toast = useToastStore()
 
 const selectedFiles = ref<File[]>([])
 const previewUrls = ref<string[]>([])
@@ -22,7 +22,7 @@ const handleFileChange = (event: Event) => {
   if (target.files) {
     const files = Array.from(target.files).filter((file) => file.type.startsWith('image/'))
     if (selectedFiles.value.length + files.length > 10) {
-      toast.show('Можно загрузить не более 10 фотографий.', 'error') // Красивая ошибка
+      toast.show('Можно загрузить не более 10 фотографий.', 'error')
       target.value = ''
       return
     }
@@ -41,7 +41,7 @@ const removeFile = (index: number) => {
 
 const handleCreate = async () => {
   if (Number(price.value) <= 0) {
-    toast.show('Цена должна быть больше нуля.', 'error') // Красивая ошибка
+    toast.show('Цена должна быть больше нуля.', 'error')
     return
   }
   isSubmitting.value = true
@@ -60,11 +60,11 @@ const handleCreate = async () => {
 
     const response = await api.post<{ id: number }>('ads/', formData)
     
-    toast.show('Объявление успешно опубликовано!', 'success') // Успех
+    toast.show('Объявление успешно опубликовано!', 'success')
     router.push(`/ad/${response.data.id}`)
   } catch (error: unknown) {
     console.error('Косяк при создании:', error)
-    toast.show('Сервер не отвечает или произошла ошибка', 'error') // Ошибка сервера
+    toast.show('Сервер не отвечает или произошла ошибка', 'error')
   } finally {
     isSubmitting.value = false
   }
@@ -85,7 +85,6 @@ onBeforeUnmount(() => {
         <input v-model="title" type="text" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl p-3 focus:border-blue-500 outline-none" required placeholder="Например: Ремонт стиралок">
       </div>
       
-      <!-- АДАПТИВНАЯ СЕТКА: На мобиле колонка (flex-col), на компах строка (sm:flex-row) -->
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="w-full sm:w-1/3">
           <label class="block text-gray-400 text-sm mb-2">Цена</label>
@@ -149,6 +148,7 @@ onBeforeUnmount(() => {
   margin: 0;
 }
 .no-spinners[type=number] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 </style>
