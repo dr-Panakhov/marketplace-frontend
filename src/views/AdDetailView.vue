@@ -144,6 +144,7 @@ onMounted(() => {
           </router-link>
           <p class="text-gray-400 mb-4">📍 Город: {{ ad.city }}</p>
           
+        <div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
           <button 
             v-if="!isPhoneVisible" 
             @click="showContacts"
@@ -151,10 +152,18 @@ onMounted(() => {
           >
             Показать контакты
           </button>
-          
           <div v-else class="text-3xl font-black text-green-400 tracking-wider">
-            {{ ad.phone_number }}
+          {{ ad.phone_number }}
           </div>
+
+          <!-- Наша новая кнопка чата -->
+          <button 
+            @click="$router.push('/chat')" 
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold transition-colors w-full sm:w-auto"
+          >
+            Написать
+          </button>
+        </div>
         </div>
         
         <div v-else class="text-center p-4 bg-neutral-800 rounded-xl border border-neutral-700">

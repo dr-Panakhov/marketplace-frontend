@@ -29,6 +29,10 @@ const handleLogout = () => {
           Объявления
         </router-link>
 
+        <router-link to="/chat" class="text-gray-300 hover:text-white font-semibold transition-colors">
+          Сообщения
+        </router-link>
+
         <template v-if="!auth.isLoggedIn">
           <router-link to="/login" class="text-gray-400 hover:text-white transition-colors font-semibold">
             Войти
@@ -79,7 +83,11 @@ const handleLogout = () => {
       <router-link @click="isMenuOpen = false" to="/" class="text-gray-200 hover:text-green-400 font-bold transition-colors text-lg text-center">
         Объявления
       </router-link>
-      
+
+      <router-link to="/chat" class="сюда-скопируй-классы-от-соседних-кнопок">
+        Сообщения
+      </router-link>
+
       <template v-if="!auth.isLoggedIn">
         <router-link @click="isMenuOpen = false" to="/login" class="text-gray-400 hover:text-white transition-colors font-semibold text-center">
           Войти
